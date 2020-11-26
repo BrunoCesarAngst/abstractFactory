@@ -1,0 +1,52 @@
+@startuml af
+
+  interface AbstractFactory{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+
+  class ConcreteFactory1{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+
+  class ConcreteFactory2{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+
+  interface AbstractProductA{
+    +usefulFunctionA(): string
+  }
+
+  class ConcreteProductA1{
+    +usefulFunctionA(): string
+  }
+
+  class ConcreteProductA2{
+    +usefulFunctionA(): string
+  }
+
+  interface AbstractProductB{
+    +usefulFunctionB(): string
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+  class ConcreteProductB1{
+    +usefulFunctionB(): string
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+  class ConcreteProductB2{
+    +usefulFunctionB(): string
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+  AbstractFactory <|-- ConcreteFactory1 : generalização
+  AbstractFactory <|-- ConcreteFactory2 : generalização
+  AbstractProductA <|-- ConcreteProductA1 : generalização
+  AbstractProductA <|-- ConcreteProductA2 : generalização
+  AbstractProductB <|-- ConcreteProductB1 : generalização
+  AbstractProductB <|-- ConcreteProductB2 : generalização
+
+@enduml

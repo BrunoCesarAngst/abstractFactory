@@ -1,0 +1,120 @@
+@startuml af
+skinparam packageStyle rectangle
+
+'
+' A interface Abstract Factory declara um conjunto de métodos que retornam
+' diferentes produtos abstratos. Esses produtos são chamados de família e são
+' relacionado por um tema ou conceito de alto nível. Produtos de uma família geralmente são
+' capazes de colaborar entre si. Uma família de produtos pode ter vários
+' variantes, mas os produtos de uma variante são incompatíveis com produtos de
+' outro.
+
+  interface AbstractFactory{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+  
+' As fábricas de concreto produzem uma família de produtos que pertencem a um único
+' variante. A fábrica garante que os produtos resultantes são compatíveis. Nota
+' que as assinaturas dos métodos da Fábrica de Concreto retornem um produto abstrato,
+' enquanto dentro do método um produto concreto é instanciado.
+
+  class ConcreteFactory1{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+
+' Cada Fábrica de Concreto possui uma variante de produto correspondente.
+
+  class ConcreteFactory2{
+    +createProductA(): AbstractProductA
+    +createProductB(): AbstractProductB
+  }
+
+' Cada produto distinto de uma família de produtos deve ter uma interface básica. Todos
+' variantes do produto devem implementar esta interface.
+
+  interface AbstractProductA{
+    +usefulFunctionA(): string
+  }
+
+' Esses produtos de concreto são criados por fábricas de concreto correspondentes.
+
+  class ConcreteProductA1{
+    +usefulFunctionA(): string
+  }
+
+  class ConcreteProductA2{
+    +usefulFunctionA(): string
+  }
+
+  interface AbstractProductB{
+    +usefulFunctionB(): string
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+' Esta é a interface básica de outro produto. Todos os produtos podem interagir
+' entre si, mas a interação adequada só é possível entre produtos de
+' a mesma variante concreta.
+
+  class ConcreteProductB1{
+
+    ' O produto B é capaz de fazer suas próprias coisas ...
+    +usefulFunctionB(): string
+
+    ' ... mas também pode colaborar com o ProdutoA.
+    '
+    ' A Abstract Factory certifica-se de que todos os produtos que cria são da
+    ' mesma variante e, portanto, compatível.
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+' Esses produtos de concreto são criados por fábricas de concreto correspondentes.
+
+  class ConcreteProductB2{
+    +usefulFunctionB(): string
+
+    ' A variante, Produto B2, só funciona corretamente com a variante,
+    ' Produto A2. No entanto, ele aceita qualquer instância de AbstractProductA como
+    ' um argumento.
+    +anotherUsefulFunctionB(collaborator: AbstractProductA): string
+  }
+
+' O código do cliente funciona com fábricas e produtos apenas por meio de resumo
+' tipos: AbstractFactory e AbstractProduct. Isso permite que você passe por qualquer fábrica ou
+' subclasse do produto para o código do cliente sem quebrá-lo.
+
+  ' class ClientCode {
+    ' -factory: AbstractFactory
+    ' +Client()
+  '   const productA = factory.createProductA();
+  '   const productB = factory.createProductB();
+
+  '   console.log(productB.usefulFunctionB());
+  '   console.log(productB.anotherUsefulFunctionB(productA));
+  ' }
+
+  package productA <<Node>> {
+
+  }
+
+  package productB <<Database>> {
+
+  }
+
+  ConcreteFactory1 ..|> AbstractFactory  : implementa
+  ConcreteFactory2 ..|> AbstractFactory  : implementa
+  ConcreteFactory1 ..> ConcreteProductA1  : use
+  ConcreteFactory1 ..> ConcreteProductA2  : use
+  ConcreteFactory2 ..> ConcreteProductB1  : use
+  ConcreteFactory2 ..> ConcreteProductB2  : use
+  ConcreteProductA1 ..|> AbstractProductA : implementa
+  ConcreteProductA2 ..|> AbstractProductA : implementa
+  ConcreteProductA1 "1, 1" o-- "0, *" productA : agregação
+  ConcreteProductA2 "1, 1" o-- "0, *" productA : agregação
+  ConcreteProductB1 ..|> AbstractProductB : implementa
+  ConcreteProductB2 ..|> AbstractProductB : implementa
+  ConcreteProductB1 "1, 1" o-- "0, *" productB : agregação
+  ConcreteProductB2 "1, 1" o-- "0, *" productB : agregação
+
+@enduml
